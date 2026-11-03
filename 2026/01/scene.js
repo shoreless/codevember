@@ -121,7 +121,7 @@ for (const [position, size, color, intensity] of [
   panel.position.set(...position); panel.lookAt(0, 0, 0); envScene.add(panel);
 }
 const pmrem = new THREE.PMREMGenerator(renderer);
-const environment = pmrem.fromScene(envScene, .08);
+const environment = pmrem.fromScene(envScene, .02);
 pmrem.dispose();
 envScene.traverse((object) => { object.geometry?.dispose(); object.material?.dispose(); });
 const eggGeometry = new THREE.SphereGeometry(1, 48, 32);
