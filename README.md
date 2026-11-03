@@ -38,8 +38,8 @@ Expected URL: https://shoreless.github.io/codevember/
 
 ## Day 01 — Fold
 
-An 18-second, manually controlled animation. Play/pause, replay, or scrub the timeline; playback stops at the reveal and never loops. Starts paused, including for reduced-motion preferences. Pauses when the tab is hidden.
+A 36-second, manually controlled animation. Play/pause, replay, or scrub the timeline; playback stops after the two sweet-potato characters finish their chase and never loops. Starts paused, including for reduced-motion preferences. Pauses when the tab is hidden.
 
-The connected triangular sheet uses an original stylized folding choreography, not a physically exact origami crease pattern. The opaque purple shell conceals the golden egg before unfolding. Three.js is vendored locally so the experiment has no runtime CDN dependency.
+The connected triangular sheet uses an original stylized folding choreography, not a physically exact origami crease pattern. The opaque purple shell conceals a larger golden egg before unfolding. The egg wobbles, cracks along zigzag seams and unfolds into six golden petals. Two original red sweet-potato characters with large white eyes and golden belly patches spring out, chase each other, then wave. All shell and character poses are deterministic functions of timeline time, so scrubbing backward restores each stage. Three.js is vendored locally so the experiment has no runtime CDN dependency.
 
 Requires a browser with JavaScript and WebGL 2.
