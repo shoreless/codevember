@@ -6,40 +6,30 @@
   <meta name="theme-color" content="#f2f0e9">
   <meta name="description" content="Day 01 — Fold. A paper sweet potato unfolds to reveal a golden egg that cracks, unfolds, and hatches two little sweet-potato characters. A Three.js experiment by shoreless.">
   <title>01 · Fold — Codevember</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3-minimal">
 </head>
 <body>
   <header>
-    <a class="back" href="../../"><span aria-hidden="true">↖</span> All experiments</a>
-    <a class="brand" href="../../">codevember<span>.</span></a>
-    <span class="edition">2026 / 01</span>
+    <a class="back" href="../../" aria-label="All experiments"><span aria-hidden="true">↖</span> Codevember</a>
+    <h1><span>01 /</span> Fold</h1>
   </header>
   <main>
-    <section class="intro" aria-labelledby="title">
-      <p class="eyebrow">DAY 01 <span>—</span> A STUDY IN PAPER</p>
-      <h1 id="title">Fold<span>.</span></h1>
-      <p class="subtitle">An ordinary thing.<br>A little wonder inside.</p>
-    </section>
     <div id="stage" role="img" aria-label="A flat sheet of plum paper folds into a faceted sweet potato, then unfolds to reveal a golden egg that cracks, unfolds, and hatches two little sweet-potato characters.">
       <p id="fallback" role="status">Preparing the paper…</p>
     </div>
-    <div class="scene-note" aria-hidden="true"><span id="scene-number">01</span><span id="scene-label">A sheet of possibility</span></div>
     <section class="transport" aria-label="Animation controls">
       <div class="transport-top">
         <button id="play" type="button" disabled aria-label="Play animation"><svg id="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7Z"/></svg><span id="play-label">Play</span></button>
         <button id="replay" class="replay" type="button" disabled aria-label="Replay animation from the beginning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a8 8 0 1 1 0 6M4 4v5h5"/></svg></button>
-        <span class="transport-hint">Paper, patience &amp; a small surprise.</span>
         <span class="time"><span id="elapsed">00:00</span><span class="duration"> / 00:36</span></span>
       </div>
       <label class="sr-only" for="timeline">Animation timeline</label>
       <input id="timeline" type="range" min="0" max="36" step="0.01" value="0" disabled aria-valuetext="0 seconds, flat paper">
-      <div class="chapters"><span>01 &nbsp; THE PAPER</span><span>02 &nbsp; THE FOLD</span><span>03 &nbsp; THE HATCH</span><span>04 &nbsp; THE MISCHIEF</span></div>
     </section>
   </main>
-  <footer><span>A little experiment by <a href="https://github.com/shoreless/codevember">shoreless</a></span><span>折る <span class="footer-separator">/</span> to fold</span></footer>
   <noscript><p class="no-script">This experiment needs JavaScript to animate the paper.</p></noscript>
   <script type="module">
-    import('./scene.js?v=2-hatch').catch((error) => {
+    import('./scene.js?v=3-minimal').catch((error) => {
       console.error(error);
       document.getElementById('fallback').textContent = 'The paper could not load. Try refreshing in a browser with WebGL enabled.';
       document.getElementById('fallback').hidden = false;
