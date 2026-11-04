@@ -1,0 +1,8 @@
+/* A little salt, a little ink. Shared by the archive and experiments. */
+:root { color-scheme: dark; --sea: #102f32; --ink: #efe5bd; --brass: #d4b86d; --muted: #a9b8a9; --line: #67817a; --paper: #f2f0e9; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--sea) url("chart.svg") center top / 1600px auto; color: var(--ink); font-family: Georgia, 'Times New Roman', serif; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 7px; }
+::selection { background: var(--brass); color: var(--sea); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }

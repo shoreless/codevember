@@ -1,40 +1,35 @@
-:root { color-scheme: light; --paper: #f2f0e9; --ink: #24251f; --muted: #686a60; --line: #c9c9bc; --accent: #c33e0b; }
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
-a { color: inherit; }
-a:focus-visible { outline: 2px solid var(--accent); outline-offset: 7px; }
-::selection { background: var(--accent); color: white; }
-.page { max-width: 1600px; min-height: 100svh; margin: auto; padding: 0 5vw; }
-.masthead { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; border-bottom: 1px solid var(--line); }
-.wordmark { font-weight: 800; font-size: 21px; letter-spacing: -1px; text-decoration: none; }
-.dot { color: var(--accent); }
-.source { font-size: 11px; text-decoration: none; }
-.source:hover, .back:hover { text-decoration: underline; }
-.source span { margin-left: 8px; }
-.intro { padding: 64px 0; }
-h1 { font-size: clamp(58px, 10vw, 144px); font-weight: 800; letter-spacing: -.085em; line-height: 1; margin: 0; }
-h1 .period { color: var(--accent); }
-.archive { border-top: 1px solid var(--ink); padding: 24px 0 64px; }
-.section-heading { padding-bottom: 26px; }
-h2 { font-size: 30px; margin: 0; font-weight: 400; letter-spacing: -1px; }
-.experiment { display: grid; grid-template-columns: 80px 1fr 32px; gap: 20px; align-items: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 28px 10px 28px 0; text-decoration: none; transition: padding .2s, background .2s; }
-.experiment:hover { background: #e8e6dc; padding-left: 12px; }
-.day, .eyebrow, .back { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
-.day { font-size: 24px; color: var(--accent); }
-.experiment-name { font-size: 26px; letter-spacing: -.5px; }
-.arrow { justify-self: end; font-size: 26px; }
-.back { font-size: 12px; text-decoration: none; }
-.eyebrow { margin: 0; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
-.square { display: inline-block; width: 6px; height: 6px; background: var(--accent); margin-right: 8px; }
-.workbench { padding: 10vh 0; }
-.workbench h1 { font-size: clamp(100px, 23vw, 300px); margin: 24px 0; color: var(--accent); }
-@media (max-width: 600px) {
-  .page { padding: 0 6vw; }
-  .masthead { padding: 24px 0; }
-  .intro { padding: 48px 0; }
-  h1 { font-size: 12vw; }
-  .experiment { grid-template-columns: 44px 1fr 24px; gap: 12px; }
-  .experiment-name { font-size: 23px; }
-  .day { font-size: 22px; }
+@import url("sea.css?v=4-sea");
+.page { max-width: 1600px; min-height: 100svh; margin: auto; padding: 0 6vw 64px; }
+.masthead { display: flex; align-items: center; justify-content: space-between; padding: 25px 0 21px; border-bottom: 3px double var(--line); }
+.wordmark { font-style: italic; font-size: 23px; text-decoration: none; }
+.wordmark span { color: var(--brass); display: inline-block; margin-left: 8px; font-style: normal; }
+.source, .back { font: 12px 'Courier New', monospace; text-decoration: none; }
+.source:hover, .back:hover { color: var(--brass); }
+.intro { display: flex; align-items: center; justify-content: space-between; padding: 32px 0 16px; }
+h1 { font-size: clamp(62px, 10vw, 148px); font-weight: normal; font-style: italic; letter-spacing: -.065em; line-height: 1.05; margin: 0; transform: rotate(-2deg); }
+h1 span { display: inline-block; transform: translateY(9px) rotate(2deg); }
+h1 i { display: inline-block; font-size: .38em; margin-left: .28em; color: var(--brass); vertical-align: top; transform: rotate(17deg); }
+.compass { display: grid; place-items: center; width: 100px; height: 100px; border: 1px solid var(--line); outline: 1px dashed var(--line); outline-offset: 7px; border-radius: 50%; color: var(--brass); transform: rotate(12deg); font: 10px 'Courier New', monospace; flex-shrink: 0; margin: 10px 15px 0 30px; }
+.compass b { font: 60px/45px Georgia, serif; font-weight: normal; }
+.archive { padding: 20px 0 10px; }
+.section-heading { display: flex; align-items: center; gap: 16px; color: var(--brass); margin-bottom: 23px; }
+h2 { font: 16px 'Courier New', monospace; letter-spacing: .22em; margin: 0; }
+.section-heading > span { font-size: 28px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 45px; }
+.experiment { display: block; width: 100%; max-width: 660px; text-decoration: none; transform: rotate(-1.5deg); transition: transform .3s; }
+.experiment:hover { transform: rotate(.5deg) translateY(-5px); }
+.porthole { position: relative; padding: 17px; border: 1px solid var(--brass); border-radius: 48% 48% 43% 43% / 40% 40% 38% 38%; background: #234448; box-shadow: inset 0 0 0 6px #102f32, inset 0 0 0 7px #718375, 0 15px 35px #001b1d70; }
+.porthole img { display: block; width: 100%; height: auto; aspect-ratio: 1.65; object-fit: cover; object-position: center 65%; border-radius: inherit; border: 1px solid var(--brass); background: var(--paper); }
+.bolt { position: absolute; color: var(--brass); font-size: 12px; line-height: 12px; }
+.north { top: 2px; left: calc(50% - 6px); }.south { bottom: 2px; left: calc(50% - 6px); }.east { right: 2px; top: calc(50% - 6px); }.west { left: 2px; top: calc(50% - 6px); }
+.caption { display: flex; align-items: baseline; gap: 15px; padding: 19px 35px 0; }
+.day { font: 14px 'Courier New', monospace; color: var(--brass); border-bottom: 1px solid var(--brass); padding-bottom: 5px; }
+.experiment-name { font-size: 36px; font-style: italic; }
+.arrow { margin-left: auto; color: var(--brass); font-size: 28px; }
+.eyebrow { font: 12px 'Courier New', monospace; color: var(--muted); }
+.workbench { padding: 10vh 0; }.workbench h1 { font-size: clamp(100px, 23vw, 300px); margin: 24px 0; color: var(--brass); }
+@media (max-width: 650px) {
+ .page { padding: 0 7vw 40px; }.masthead { padding: 22px 0 18px; }.wordmark { font-size: 21px; }
+ .intro { padding: 32px 0 16px; } h1 { font-size: 12.5vw; } .compass { display: none; }
+ .archive { padding-top: 19px; }.section-heading { margin-bottom: 24px; }.caption { padding: 16px 18px 0; }.experiment-name { font-size: 31px; }.porthole { padding: 13px; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
