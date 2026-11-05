@@ -32,7 +32,7 @@ class Painter{
     const color=material.color?.clone()||new T.Color('#ffffff');
     if(!material.isMeshBasicMaterial){const shade=.55+Math.max(0,normal.dot(light))*.7; color.multiplyScalar(shade);const spec=Math.max(0,normal.dot(light.clone().add(eye.clone().sub(aa).normalize()).normalize()))**24*((material.metalness||0)*.6+(1-(material.roughness??1))*.25);color.addScalar(spec);}
     if(scene.fog){const dist=center.distanceTo(camera.position),f=T.MathUtils.smoothstep(dist,scene.fog.near,scene.fog.far);color.lerp(scene.fog.color,f);}
-    faces.push({order:mesh.userData.ground||0,p,color:'#'+color.getHexString(),alpha:material.opacity,depth:(p[0].z+p[1].z+p[2].z)/3,map:material.map?.image,uv:uv?indices.map(j=>[uv.getX(j),uv.getY(j)]):null});
+    faces.push({order:mesh.userData.ground||mesh.renderOrder||0,p,color:'#'+color.getHexString(),alpha:material.opacity,depth:(p[0].z+p[1].z+p[2].z)/3,map:material.map?.image,uv:uv?indices.map(j=>[uv.getX(j),uv.getY(j)]):null});
    }
   });
   faces.sort((a,b)=>a.order-b.order||b.depth-a.depth);

@@ -1,5 +1,5 @@
 import * as T from '../../assets/vendor/three.module.min.js';
-import {deform,smooth,mix} from './deformation.js';
+import {deform,smooth,mix,meltClock} from './deformation.js?v=2-visitor';
 const vec=p=>new T.Vector3(...p);
 export function makeFactory(scene,{signTexture=null}={}){
  const source=new T.Group(),root=new T.Group();scene.add(root);
@@ -62,15 +62,15 @@ export function makeFactory(scene,{signTexture=null}={}){
   const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3).setUsage(T.DynamicDrawUsage));geo.setAttribute('normal',new T.Float32BufferAttribute(normals,3));geo.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));geo.setIndex(indices);const mesh=new T.Mesh(geo,material);mesh.castShadow=true;mesh.receiveShadow=true;mesh.frustumCulled=false;root.add(mesh);parts.push({mesh,original:new Float32Array(positions),base:material.color.clone(),roughness:material.roughness??1,metalness:material.metalness??0});
  }
  source.traverse(o=>{o.geometry?.dispose();});
- const chocolate=new T.Color('#542916');
+ const chocolate=new T.Color('#35180f');
  function pose(t){
-  root.visible=t<30;
+  const clock=meltClock(t);root.visible=clock<30;if(!root.visible)return;
   for(const part of parts){const {mesh,original,base}=part,a=mesh.geometry.attributes.position;
    for(let i=0;i<a.count;i++){const n=i*3;a.setXYZ(i,...deform(original[n],original[n+1],original[n+2],t));}
    a.needsUpdate=true;mesh.geometry.computeVertexNormals();mesh.geometry.computeBoundingSphere();
-   const p=smooth(mesh.material===light?7:8,mesh.material===light?14:22,t);mesh.material.color.copy(base).lerp(chocolate,p);
-   if(mesh.material.roughness!==undefined){mesh.material.roughness=mix(part.roughness,.16,p);mesh.material.metalness=mix(part.metalness,.04,p);mesh.material.clearcoat=p*.8;mesh.material.clearcoatRoughness=.12;}
-   if(mesh.material.map)mesh.material.opacity=1-smooth(13,20,t),mesh.material.transparent=true;
+   const p=smooth(mesh.material===light?7:8,mesh.material===light?14:22,clock);mesh.material.color.copy(base).lerp(chocolate,p);
+   if(mesh.material.roughness!==undefined){mesh.material.roughness=mix(part.roughness,.065,p);mesh.material.metalness=mix(part.metalness,.12,p);mesh.material.clearcoat=p;mesh.material.clearcoatRoughness=.035;}
+   if(mesh.material.map)mesh.material.opacity=1-smooth(13,20,clock),mesh.material.transparent=true;
   }
  }
  return {root,parts,stacks,pose};
