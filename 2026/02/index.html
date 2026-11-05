@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eee5d3">
+  <meta name="description" content="02 / Shatter. A little sleight of hand. Codevember by shoreless.">
+  <title>02 · Shatter — Codevember</title>
+  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="preload" as="image" href="chocolate-garden.webp">
+</head>
+<body>
+  <main id="experiment">
+    <h1 class="sr-only">02 / Shatter</h1>
+    <div id="secret" aria-hidden="true">
+      <img id="garden" src="chocolate-garden.webp" alt="A chocolate bar on gold foil, with tiny mushrooms, spun-sugar ferns and amber eggs growing between its squares.">
+      <div class="vignette"></div>
+    </div>
+    <canvas id="shell" aria-hidden="true"></canvas>
+    <button id="break" type="button" disabled aria-label="Shatter the page"><span class="sr-only">Shatter the page</span></button>
+    <a id="back" href="../../" aria-label="All experiments">↖ Codevember</a>
+    <button id="restore" type="button" aria-label="Restore the page" title="Restore the page" hidden>↶</button>
+    <p id="status" class="sr-only" role="status" aria-live="polite">Preparing the page.</p>
+    <noscript><p class="no-script">This little trick needs JavaScript.</p></noscript>
+  </main>
+  <script type="module" src="scene.js?v=1"></script>
+</body>
+</html>

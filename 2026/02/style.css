@@ -1,0 +1,22 @@
+:root { color-scheme: light; --paper: #eee5d3; --sea: #173b3b; --gold: #d4b86d; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); font-family: Georgia, 'Times New Roman', serif; }
+#experiment { position: relative; height: 100svh; min-height: 380px; overflow: hidden; isolation: isolate; }
+#secret { position: absolute; inset: 0; background: #100905; }
+#garden { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); }
+.vignette { position: absolute; inset: 0; background: linear-gradient(#08050266, transparent 20%, transparent 78%, #08050299); }
+#shell { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#break { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+#break:disabled { cursor: wait; }
+#break:focus-visible { outline: 2px solid var(--sea); outline-offset: -12px; }
+#back { position: absolute; z-index: 3; left: 5vw; top: 24px; color: transparent; text-decoration: none; font: italic 21px Georgia, serif; padding: 6px 0; }
+#back:focus-visible, #restore:focus-visible { outline: 2px solid var(--gold); outline-offset: 7px; }
+body.open #back { color: #f5e8c8; text-shadow: 0 2px 12px #000; }
+body.busy #back { visibility: hidden; }
+#restore { position: absolute; z-index: 3; left: 50%; bottom: 28px; transform: translateX(-50%); width: 48px; height: 48px; padding: 0 0 4px; border: 1px solid #d4b86d99; border-radius: 50%; background: #160e09c9; color: #efe5bd; font: 30px Georgia, serif; cursor: pointer; }
+#restore:hover { background: #423018; }
+#restore:disabled { cursor: wait; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.no-script { position: absolute; top: 45%; left: 10%; width: 80%; text-align: center; background: var(--paper); padding: 24px; color: var(--sea); }
+@media (max-aspect-ratio: 3/4) { #garden { object-fit: contain; } #secret { background: radial-gradient(ellipse, #372113, #0b0704 75%); } }
+@media (max-width: 600px) { #back { top: 20px; font-size: 18px; } #restore { bottom: 24px; } }
