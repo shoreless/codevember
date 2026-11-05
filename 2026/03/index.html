@@ -1,23 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Day 03 of Codevember 2026. An experiment in progress by shoreless.">
-  <meta name="theme-color" content="#102f32">
-  <title>03 — Codevember 2026</title>
-  <link rel="stylesheet" href="../../assets/style.css?v=4-sea">
-</head>
-<body>
-  <div class="page">
-    <header class="masthead">
-      <a class="back" href="../../">← Codevember</a>
-      <span class="eyebrow">2026</span>
-    </header>
-    <main class="workbench">
-      <p class="eyebrow"><span class="square" aria-hidden="true"></span> In progress</p>
-      <h1>03<span class="period">.</span></h1>
-    </main>
-  </div>
-</body>
-</html>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171f1c"><meta name="description" content="03 / Melt. An industrial daydream. Codevember by shoreless."><title>03 · Melt — Codevember</title><link rel="stylesheet" href="style.css?v=1-factory">
+</head><body><header><a href="../../" aria-label="All experiments">↖ Codevember</a><h1><span>03 /</span> Melt</h1></header>
+<main><div id="stage" role="img" aria-label="A dreary concrete factory, tangled with pipes and smokestacks, slowly melts into a pool of chocolate."></div><section class="transport" aria-label="Animation controls"><div class="row"><button id="play" disabled aria-label="Play animation">Melt</button><button id="replay" disabled aria-label="Restore the factory" title="Restore the factory">↶</button><span class="time"><span id="elapsed">00:00</span> / 00:34</span></div><label class="sr-only" for="timeline">Animation timeline</label><input id="timeline" type="range" min="0" max="34" step=".01" value="0" disabled></section><p id="status" class="sr-only" role="status" aria-live="polite">The factory</p><p id="fallback">Preparing the factory…</p><noscript><p class="no-script">This experiment needs JavaScript.</p></noscript></main>
+<script type="module">import('./scene.js?v=1-factory').catch(error=>{console.error(error);const f=document.querySelector('#fallback');f.hidden=false;f.textContent='The factory could not load. Please refresh to try again.';});</script>
+</body></html>
