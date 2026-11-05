@@ -1,167 +1,68 @@
-import { clamp, createShards, projectShard, randomSource } from './fracture.js';
-
-const canvas=document.querySelector('#shell'), ctx=canvas.getContext('2d');
-const texture=document.createElement('canvas'), paint=texture.getContext('2d');
-const trigger=document.querySelector('#break'), restore=document.querySelector('#restore');
-const garden=document.querySelector('#garden'), secret=document.querySelector('#secret');
-const status=document.querySelector('#status'), stage=document.querySelector('#experiment');
-const motion=matchMedia('(prefers-reduced-motion: reduce)');
-let width=0,height=0,ratio=1,shards=[],edges=[],origin={x:.5,y:.48};
-let time=0,direction=0,frame=0,last=null,ready=false,failed=false;
-const duration=4;
-
-function ellipsePath(c,x,y,rx,ry) {
-  c.beginPath();
-  // Slightly narrow at the top; the page remembers the egg from Fold.
-  c.moveTo(x,y-ry);
-  c.bezierCurveTo(x+rx*.64,y-ry,x+rx*1.14,y+ry*.18,x+rx*.8,y+ry*.69);
-  c.bezierCurveTo(x+rx*.49,y+ry*1.13,x-rx*.49,y+ry*1.13,x-rx*.8,y+ry*.69);
-  c.bezierCurveTo(x-rx*1.14,y+ry*.18,x-rx*.64,y-ry,x,y-ry);
-  c.closePath();
-}
-function makeTexture() {
-  texture.width=Math.round(width*ratio);texture.height=Math.round(height*ratio);
-  paint.setTransform(ratio,0,0,ratio,0,0);
-  const wash=paint.createRadialGradient(width*.47,height*.42,10,width*.5,height*.5,Math.max(width,height)*.8);
-  wash.addColorStop(0,'#f7f0e1');wash.addColorStop(.6,'#eee5d3');wash.addColorStop(1,'#d9ceb7');
-  paint.fillStyle=wash;paint.fillRect(0,0,width,height);
-  const rand=randomSource(11);
-  for(let i=0;i<width*height/210;i++) {
-    paint.fillStyle=rand()>.15?'#91775a16':'#7150482b';
-    const r=.3+rand()*.8;paint.beginPath();paint.ellipse(rand()*width,rand()*height,r,r*.62,rand()*3,0,Math.PI*2);paint.fill();
+import * as T from '../../assets/vendor/three.module.min.js';
+import {createRenderer} from './renderer.js';
+import {makeEgg} from './egg.js';
+import {makePage} from './page.js';
+import {makeForest} from './forest.js';
+import {potato,between} from './models.js';
+import {duration,story,framing,smooth,mix,clamp} from './story.js';
+const stage=document.querySelector('#stage'),play=document.querySelector('#play'),replay=document.querySelector('#replay'),timeline=document.querySelector('#timeline'),start=document.querySelector('#start'),status=document.querySelector('#status'),elapsed=document.querySelector('#elapsed');
+const renderer=createRenderer();stage.appendChild(renderer.domElement);renderer.domElement.setAttribute('aria-hidden','true');
+const scene=new T.Scene();scene.background=new T.Color('#eee5d3');scene.fog=new T.Fog('#34493a',14,47);
+const camera=new T.PerspectiveCamera(43,1,.1,110);camera.position.set(0,2.5,9);camera.lookAt(0,2.5,0);
+scene.add(new T.HemisphereLight('#fff1d7','#667a57',2.3));
+const sun=new T.DirectionalLight('#ffe2ac',3.3);sun.position.set(-7,12,8);sun.target.position.set(0,0,-15);scene.add(sun,sun.target);sun.castShadow=true;Object.assign(sun.shadow.camera,{left:-15,right:15,top:25,bottom:-25,near:.5,far:70});sun.shadow.mapSize.set(1024,1024);sun.shadow.normalBias=.05;
+const fill=new T.DirectionalLight('#cbdcd2',1.1);fill.position.set(5,6,-18);scene.add(fill);
+let environment=null;
+if(!renderer.software){const env=new T.Scene();env.background=new T.Color('#b1a086');for(const [position,size,intensity]of[[[-4,6,3],[4,7],5],[[4,3,-3],[2,6],3],[[0,7,-1],[5,5],2]]){const panel=new T.Mesh(new T.PlaneGeometry(...size),new T.MeshBasicMaterial({color:new T.Color('#fff1d1').multiplyScalar(intensity),side:T.DoubleSide}));panel.position.set(...position);panel.lookAt(0,0,0);env.add(panel);}const pmrem=new T.PMREMGenerator(renderer);environment=pmrem.fromScene(env,.02).texture;pmrem.dispose();env.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});}
+const forest=makeForest(scene,{batch:!renderer.software}),egg=makeEgg(scene,environment),page=makePage(scene);
+const guides=[potato(0),potato(1)];guides.forEach(p=>scene.add(p.root));
+const shadow=new T.Mesh(new T.CircleGeometry(1,32),new T.MeshBasicMaterial({color:'#7e694c',transparent:true,opacity:.12,depthWrite:false}));shadow.position.set(0,.86,.035);shadow.scale.set(1.05,.18,1);scene.add(shadow);
+const paperColor=new T.Color('#eee5d3'),forestColor=new T.Color('#34493a');
+const motion=matchMedia('(prefers-reduced-motion: reduce)');let time=0,playing=false,raf=0,last=null,aspect=1;
+function pose(t){
+ const s=story(t);scene.background.copy(paperColor).lerp(forestColor,smooth(11,17,t));scene.fog.color.copy(forestColor);forest.root.visible=t>=10;page.pose(t);egg.pose(t);shadow.visible=t<12;
+ const view=framing(s,aspect);camera.position.set(...view.camera);camera.lookAt(...view.look);
+ guides.forEach((p,i)=>{
+  const sign=i?1:-1;const walkWeight=Math.max(smooth(12,12.7,t)*(1-smooth(19,20,t)),smooth(24.6,25.2,t)*(1-smooth(26.2,27,t)),smooth(30,30.6,t)*(1-smooth(32.2,33,t)),smooth(35,35.7,t)*(1-smooth(38,39,t)));const step=Math.sin(t*12+i*2)*walkWeight;
+  p.root.visible=t>=5.5;p.root.scale.setScalar(s.scale*(i?.9:1));p.root.position.set(sign*mix(.28,.7,smooth(11,17,t)),s.guide[1]+Math.abs(step)*.065,s.guide[2]+i*.1);
+  p.root.rotation.set(0,mix(sign*-.12,Math.PI+.2*sign,walkWeight),step*.05);p.body.rotation.x=0;p.body.scale.set(1,1,1);
+  // A glance and nudge inside the egg, then both turn to lead us away.
+  if(t>6&&t<12){p.root.rotation.y=mix(sign*.35,sign*1.2,smooth(7,8,t))*(1-smooth(9,11,t));p.root.position.x+=Math.sin(t*4+i)*.025*smooth(7,8,t);}
+  p.legs[0].rotation.x=step*.7+s.sit*.9;p.legs[1].rotation.x=-step*.7+s.sit*.9;
+  p.eyes.forEach(e=>e.scale.y=1-.9*Math.max(0,1-Math.abs((t+i*.5)%5-4.8)/.09));
+  p.setHand(0,[-.36,.46+step*.06,.08]);p.setHand(1,[.36,.46-step*.06,.08]);p.snack.visible=false;p.sugar.visible=false;
+  if(i===0&&t>=20&&t<25.5){
+   const reach=smooth(20,21,t),pull=smooth(21.5,23.4,t),eat=smooth(23.4,24.7,t);
+   const hand=new T.Vector3(mix(-.36,-.28,reach),mix(.46,.88,reach),mix(.08,-.42,reach));hand.lerp(new T.Vector3(-.04,.35,.35),pull);
+   p.setHand(0,hand);p.snack.visible=t>22.3;p.snack.position.copy(hand);p.snack.scale.setScalar(.09*(1-eat)+.002);p.body.scale.y=1+Math.sin(t*22)*.025*eat;
   }
-  const margin=width*.05,headerY=width<600?40:45;
-  paint.fillStyle='#173b3b';paint.font=`italic ${width<600?18:21}px Georgia`;
-  paint.textAlign='left';paint.fillText('↖ Codevember',margin,headerY);
-  paint.font='12px "Courier New", monospace';paint.textAlign='right';paint.fillText('02',width-margin,headerY-2);
-  paint.strokeStyle='#78887970';paint.lineWidth=.7;
-  paint.beginPath();paint.moveTo(margin,headerY+25);paint.lineTo(width-margin,headerY+25);paint.stroke();
-  const cx=width*.5,cy=height*.49,ry=Math.min(height*.29,width*.39),rx=ry*.69;
-  paint.strokeStyle='#ad935c65';paint.lineWidth=1;ellipsePath(paint,cx,cy,rx,ry);paint.stroke();
-  paint.strokeStyle='#ad935c20';ellipsePath(paint,cx,cy,rx+6,ry+6);paint.stroke();
-  paint.fillStyle='#173b3b';paint.textAlign='center';paint.textBaseline='middle';
-  paint.font=`italic ${Math.min(width*.17,height*.19,160)}px Georgia`;
-  paint.fillText('Shatter',cx,cy-3);
-  paint.fillStyle='#9d7d40';paint.font='20px Georgia';paint.fillText('✧',cx,cy-ry-23);
-  paint.font='11px "Courier New", monospace';paint.fillStyle='#657365';
-  paint.fillText(failed?'Try again':ready?'Tap anywhere':'Preparing…',cx,height-66);
-  paint.textBaseline='alphabetic';
-  // A fine double edge makes this a brittle page rather than a floating egg.
-  paint.strokeStyle='#b79f7040';paint.strokeRect(12,12,width-24,height-24);
-  paint.strokeRect(17,17,width-34,height-34);
+  if(i===1&&t>=27&&t<30.8){const reach=smooth(27,27.8,t),pull=smooth(28.1,29,t),eat=smooth(29,30,t);const hand=new T.Vector3(mix(.36,.58,reach),mix(.46,1.05,reach),mix(.07,-.7,reach)).lerp(new T.Vector3(.03,.35,.35),pull);p.setHand(1,hand);p.sugar.visible=t>=28.1;p.sugar.position.copy(hand);p.sugar.scale.setScalar(1-eat);p.body.scale.y=1+Math.sin(t*22)*.025*eat;}
+  if(i===1&&t>=32){p.snack.visible=true;p.snack.position.set(.32,.5,.23);p.snack.scale.set(.1,.08,.14);p.setHand(1,[.32,.5,.23]);if(t>39){const chew=Math.sin(t*2)*.5+.5;p.snack.position.lerp(new T.Vector3(.04,.35,.3),chew*.6);p.setHand(1,p.snack.position);p.body.scale.y=1+Math.sin(t*20)*.015;}}
+  if(i===0&&t>=39){p.snack.visible=true;const hand=new T.Vector3(-.25,.45,.15).lerp(new T.Vector3(-.05,.36,.85),s.offer);p.snack.position.copy(hand);p.snack.scale.set(.09,.07,.09);p.setHand(0,hand);p.body.rotation.x=-s.offer*.1;}
+ });
+ forest.snackMushroom.cap.geometry=t>=23.5?forest.snackMushroom.bitten:forest.snackMushroom.whole;
+ forest.snackFern.fronds[0].visible=t<28.1;
+ forest.stretch.visible=t>21.5&&t<23.5;
+ if(forest.stretch.visible){scene.updateMatrixWorld();const hand=guides[0].hands[0].getWorldPosition(new T.Vector3());between(forest.stretch,[-1.02,1.04,-6.83],hand,.028*(1-.65*s.stretch));}
+ const crumbT=t-28.1;forest.sugarCrumbs.forEach(({mesh,angle,speed,seed})=>{mesh.visible=crumbT>0&&crumbT<1.5;if(mesh.visible){mesh.position.set(1.05+Math.cos(angle)*crumbT*speed,1.08+crumbT*.35-crumbT*crumbT*.8,-11.8+Math.sin(angle)*crumbT*speed);mesh.rotation.set(crumbT*2,seed*5,crumbT*3);}});
+ forest.spores.forEach(({mesh,base,seed})=>{mesh.position.copy(base);mesh.position.x+=Math.sin(t*.4+seed)*.1;mesh.position.y+=Math.sin(t*.5+seed)*.12;});
+ document.body.classList.toggle('inside',t>14);document.body.classList.toggle('crossing',t>10&&t<17);start.hidden=t>0;
+ timeline.value=String(t);timeline.style.setProperty('--progress',`${t/duration*100}%`);timeline.setAttribute('aria-valuetext',`${t.toFixed(1)} seconds, ${s.phase}`);elapsed.textContent=`00:${Math.floor(t).toString().padStart(2,'0')}`;
+ if(status.textContent!==s.phase)status.textContent=s.phase;
+ renderer.render(scene,camera);
 }
-function prepareShards() {
-  const center={x:origin.x*width,y:origin.y*height};
-  shards=createShards(width,height,center);
-  const found=new Map();
-  for(const shard of shards)for(let i=0;i<3;i++) {
-    const a=shard.vertices[i],b=shard.vertices[(i+1)%3];
-    const key=[`${a.x},${a.y}`,`${b.x},${b.y}`].sort().join('|');
-    if(!found.has(key))found.set(key,{a,b,distance:Math.min(Math.hypot(a.x-center.x,a.y-center.y),Math.hypot(b.x-center.x,b.y-center.y))});
-  }
-  edges=[...found.values()];
+function buttons(){play.disabled=false;replay.disabled=false;timeline.disabled=false;start.disabled=false;play.textContent=motion.matches?'Next':playing?'Pause':time>=duration?'Replay':'Play';play.setAttribute('aria-label',motion.matches?'Next scene':playing?'Pause animation':time>=duration?'Replay animation':'Play animation');}
+function tick(now){raf=0;if(!playing||document.hidden){last=null;return;}const dt=last===null?0:(now-last)/1000;last=now;time=clamp(time+dt,0,duration);pose(time);if(time>=duration){playing=false;buttons();return;}raf=requestAnimationFrame(tick);}
+function pause(){playing=false;cancelAnimationFrame(raf);raf=0;last=null;buttons();}
+function activate(){
+ if(motion.matches){pause();time=[8,16,24.5,30.5,36,46].find(t=>t>time+.05)??0;pose(time);return;}
+ if(playing){pause();return;}if(time>=duration)time=0;playing=true;last=null;buttons();raf=requestAnimationFrame(tick);
 }
-function path(c,points) {c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();}
-function paintShard(shard,pose) {
-  if(pose.opacity<.002)return;
-  const [a,b,c]=shard.vertices,[u,v,w]=pose.points;
-  const denominator=(b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y);
-  if(Math.abs(denominator)<1e-6)return;
-  const A=((v.x-u.x)*(c.y-a.y)-(w.x-u.x)*(b.y-a.y))/denominator;
-  const C=((w.x-u.x)*(b.x-a.x)-(v.x-u.x)*(c.x-a.x))/denominator;
-  const B=((v.y-u.y)*(c.y-a.y)-(w.y-u.y)*(b.y-a.y))/denominator;
-  const D=((w.y-u.y)*(b.x-a.x)-(v.y-u.y)*(c.x-a.x))/denominator;
-  ctx.save();ctx.globalAlpha=pose.opacity;
-  // A dark underside and an ivory rim give the thin fragments shell thickness.
-  ctx.fillStyle='#716047';ctx.strokeStyle='#8a7659';ctx.lineWidth=2.6;
-  path(ctx,pose.points.map(p=>({x:p.x,y:p.y+2})));ctx.fill();ctx.stroke();
-  path(ctx,pose.points);ctx.clip();
-  ctx.transform(A,B,C,D,u.x-A*a.x-C*a.y,u.y-B*a.x-D*a.y);
-  const left=Math.min(a.x,b.x,c.x),top=Math.min(a.y,b.y,c.y);
-  const boxWidth=Math.max(a.x,b.x,c.x)-left,boxHeight=Math.max(a.y,b.y,c.y)-top;
-  ctx.drawImage(texture,left*ratio,top*ratio,boxWidth*ratio,boxHeight*ratio,left,top,boxWidth,boxHeight);
-  if(pose.light){ctx.fillStyle=`rgba(66,42,20,${pose.light})`;ctx.fillRect(left,top,boxWidth,boxHeight);}
-  ctx.restore();
-}
-function draw() {
-  ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
-  garden.style.transform=motion.matches?'none':`scale(${1.06-.06*clamp(time/duration)})`;
-  if(motion.matches) {
-    ctx.globalAlpha=1-clamp(time/duration);ctx.drawImage(texture,0,0,width,height);ctx.globalAlpha=1;return;
-  }
-  if(time<.72) {
-    ctx.drawImage(texture,0,0,width,height);
-    if(time>0) {
-      ctx.lineWidth=1;ctx.strokeStyle='#5b4637';
-      for(const e of edges) {
-        const progress=clamp((time-.1-e.distance/Math.hypot(width,height)*.43)/.17);
-        if(!progress)continue;
-        const originPx={x:origin.x*width,y:origin.y*height};
-        const reverse=Math.hypot(e.a.x-originPx.x,e.a.y-originPx.y)>Math.hypot(e.b.x-originPx.x,e.b.y-originPx.y);
-        const a=reverse?e.b:e.a,b=reverse?e.a:e.b;
-        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(a.x+(b.x-a.x)*progress,a.y+(b.y-a.y)*progress);ctx.stroke();
-      }
-    }
-  } else {
-    for(const shard of shards)paintShard(shard,projectShard(shard,time,width,height));
-  }
-}
-function finish(open) {
-  direction=0;frame=0;last=null;
-  time=open?duration:0;draw();
-  document.body.classList.remove('busy');document.body.classList.toggle('open',open);
-  trigger.hidden=open;trigger.disabled=!ready;
-  secret.setAttribute('aria-hidden',String(!open));
-  restore.hidden=!open;restore.disabled=false;
-  document.querySelector('meta[name="theme-color"]').content=open?'#100905':'#eee5d3';
-  status.textContent=open?'A chocolate garden was hidden behind the page. Restore the page to try again.':'Page restored. Tap anywhere to shatter it.';
-  (open?restore:trigger).focus({preventScroll:true});
-}
-function tick(now) {
-  frame=0;
-  if(!direction||document.hidden){last=null;return;}
-  const dt=last===null?0:Math.max(0,(now-last)/1000);last=now;
-  time=clamp(time+dt*direction*(motion.matches?10:1),0,duration);draw();
-  if(direction>0&&time>=duration){finish(true);return;}
-  if(direction<0&&time<=0){finish(false);return;}
-  frame=requestAnimationFrame(tick);
-}
-function animate(nextDirection) {
-  direction=nextDirection;last=null;
-  document.body.classList.add('busy');document.body.classList.remove('open');
-  trigger.disabled=true;restore.disabled=true;restore.hidden=true;
-  secret.setAttribute('aria-hidden','true');
-  if(!frame&&!document.hidden)frame=requestAnimationFrame(tick);
-}
-trigger.addEventListener('click',event=>{
-  if(failed){loadImage();return;}
-  if(!ready||direction)return;
-  const rect=stage.getBoundingClientRect();
-  origin=event.detail?{x:clamp((event.clientX-rect.left)/width,.02,.98),y:clamp((event.clientY-rect.top)/height,.02,.98)}:{x:.5,y:.48};
-  prepareShards();status.textContent='The page is cracking.';animate(1);
-});
-restore.addEventListener('click',()=>{if(direction)return;status.textContent='Restoring the page.';animate(-1);});
-function resize() {
-  const rect=stage.getBoundingClientRect();width=rect.width;height=rect.height;
-  ratio=Math.min(devicePixelRatio||1,1.6);
-  canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
-  makeTexture();prepareShards();draw();
-}
-new ResizeObserver(resize).observe(stage);
-document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){cancelAnimationFrame(frame);frame=0;last=null;}
-  else if(direction&&!frame)frame=requestAnimationFrame(tick);
-});
-motion.addEventListener('change',()=>{if(direction){cancelAnimationFrame(frame);finish(direction>0);}else draw();});
-async function loadImage() {
-  failed=false;trigger.disabled=true;makeTexture();draw();
-  try {
-    if(!garden.complete||!garden.naturalWidth)await garden.decode();
-    ready=true;trigger.disabled=false;status.textContent='Tap anywhere to shatter the page. Keyboard: press Enter or Space on the page.';
-  } catch {
-    failed=true;status.textContent='The hidden image could not load. Tap to retry.';trigger.disabled=false;
-    garden.src='chocolate-garden.webp';
-  }
-  makeTexture();draw();
-}
-resize();loadImage();
+play.addEventListener('click',activate);start.addEventListener('click',activate);
+replay.addEventListener('click',()=>{pause();time=0;pose(time);buttons();});
+timeline.addEventListener('input',()=>{pause();time=Number(timeline.value);pose(time);buttons();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)pause();});
+motion.addEventListener('change',()=>{pause();buttons();});
+function resize(){const r=stage.getBoundingClientRect();aspect=r.width/r.height;camera.aspect=aspect;camera.updateProjectionMatrix();renderer.setSize(r.width,r.height);page.resize(r.width,r.height,camera);pose(time);}
+new ResizeObserver(resize).observe(stage);resize();buttons();document.querySelector('#fallback').hidden=true;
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();pause();const f=document.querySelector('#fallback');f.hidden=false;f.textContent='The scene was interrupted. Refresh to return to the egg.';});

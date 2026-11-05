@@ -1,28 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#eee5d3">
-  <meta name="description" content="02 / Shatter. A little sleight of hand. Codevember by shoreless.">
-  <title>02 · Shatter — Codevember</title>
-  <link rel="stylesheet" href="style.css?v=1">
-  <link rel="preload" as="image" href="chocolate-garden.webp">
-</head>
-<body>
-  <main id="experiment">
-    <h1 class="sr-only">02 / Shatter</h1>
-    <div id="secret" aria-hidden="true">
-      <img id="garden" src="chocolate-garden.webp" alt="A chocolate bar on gold foil, with tiny mushrooms, spun-sugar ferns and amber eggs growing between its squares.">
-      <div class="vignette"></div>
-    </div>
-    <canvas id="shell" aria-hidden="true"></canvas>
-    <button id="break" type="button" disabled aria-label="Shatter the page"><span class="sr-only">Shatter the page</span></button>
-    <a id="back" href="../../" aria-label="All experiments">↖ Codevember</a>
-    <button id="restore" type="button" aria-label="Restore the page" title="Restore the page" hidden>↶</button>
-    <p id="status" class="sr-only" role="status" aria-live="polite">Preparing the page.</p>
-    <noscript><p class="no-script">This little trick needs JavaScript.</p></noscript>
-  </main>
-  <script type="module" src="scene.js?v=1"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#eee5d3"><meta name="description" content="02 / Shatter. A golden egg and a little sleight of hand. Codevember by shoreless."><title>02 · Shatter — Codevember</title><link rel="stylesheet" href="style.css?v=2-forest">
+</head><body>
+<main id="experiment"><h1 class="sr-only">02 / Shatter</h1><div id="stage" role="img" aria-label="A three-dimensional golden egg cracks, the page breaks, and two little sweet potatoes lead us into an edible forest."></div>
+<button id="start" disabled aria-label="Crack the golden egg"><span class="sr-only">Crack the golden egg</span></button>
+<a id="back" href="../../" aria-label="All experiments">↖ Codevember</a>
+<section class="transport" aria-label="Animation controls"><div class="row"><button id="play" disabled aria-label="Play animation">Play</button><button id="replay" disabled aria-label="Return to the golden egg" title="Return to the golden egg">↶</button><span class="time"><span id="elapsed">00:00</span> / 00:46</span></div><label for="timeline" class="sr-only">Animation timeline</label><input id="timeline" type="range" min="0" max="46" step=".01" value="0" disabled></section>
+<p id="status" class="sr-only" role="status" aria-live="polite">The golden egg</p><p id="fallback">Preparing the egg…</p><noscript><p class="no-script">This little journey needs JavaScript.</p></noscript></main>
+<script type="module">import('./scene.js?v=2-forest').catch(error=>{console.error(error);const f=document.querySelector('#fallback');f.hidden=false;f.textContent='The scene could not load. Please refresh to try again.';});</script>
+</body></html>

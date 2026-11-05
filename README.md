@@ -47,8 +47,10 @@ Requires a browser with JavaScript and WebGL 2.
 
 ## Day 02 — Shatter
 
-Tap the page (or focus it and press Enter/Space). Cracks spread from the point of impact; the page, including its title and navigation, breaks into rotating shell fragments. A generated chocolate-garden photograph is revealed underneath. The restore button reverses the trick. No autoplay or looping.
+A 46-second, manually controlled 3D journey. Tap the golden egg or press Play. It cracks slowly; the cracks spread into the page, which breaks away as the camera enters an edible forest. The two sweet-potato guides from Fold steal stretchy fondant, snap a sugar frond, carry a piece of praline-filled chocolate, and settle on a biscuit log. One offers a little bite to the viewer. The journey ends in the clearing.
 
-Canvas 2D renders a deterministic Delaunay fracture mesh, so this experiment does not require WebGL. Animation pauses in hidden tabs. Reduced-motion preferences replace the flying fragments with a short fade. The local image must load before the trick is enabled; load failures offer a retry. Portrait layouts show the complete chocolate bar.
+Play/pause, return to the egg, and scrub in either direction. All camera and character poses derive from the timeline, including the mushroom dent, missing fern frond, crumbs, and snacks. Playback starts paused, stops at the end, and pauses when the tab is hidden. With reduced motion enabled, Next steps through still scenes.
 
-`chocolate-garden.webp` was generated for this experiment and is served locally. Its source PNG is retained outside the public repository. The gallery thumbnail deliberately shows only the intact page. Day 03 remains an unused scaffold.
+The forest, egg, page fragments, characters, and food are procedural Three.js geometry. The previous generated photograph is no longer used. Static scenery is batched by material to reduce WebGL draw calls. When WebGL is unavailable, a Canvas renderer projects the same 3D geometry with simpler lighting. The gallery shows only the unopened egg.
+
+Validation: `node scripts/test-shatter.mjs` checks fracture coverage; `node scripts/test-forest.mjs` checks geometry and camera framing across portrait and landscape aspect ratios. No dependencies or build step are needed.
