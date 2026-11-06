@@ -9,6 +9,7 @@ A collection of experiments by [shoreless](https://github.com/shoreless).
 - `2026/01/` — **Fold**, a Three.js paper sweet potato and golden-egg reveal
 - `2026/02/` — **Shatter**, a page that breaks like an eggshell
 - `2026/03/` — **Melt**, a dreary factory that softens into chocolate
+- `2026/04/` — **Tangle**, Ricardo Junior growing from a sweet potato into a climbing plant
 - `assets/vendor/` — pinned Three.js r170 and its MIT license
 - `.nojekyll` — serve the files directly on GitHub Pages
 
@@ -64,3 +65,13 @@ The factory is original procedural Three.js geometry, batched by material. Every
 Melt/play/pause, restore, and timeline controls start paused, never loop, and support scrubbing backward. Playback pauses when the tab is hidden; reduced-motion preferences replace playback with still-scene steps. The gallery shows only the intact factory.
 
 Validation: `node scripts/test-melt.mjs` checks finite geometry and normals, exact restoration after scrubbing, complete submersion, early melt timing, reversible visitor emergence, and camera framing at portrait and landscape sizes.
+
+## Day 04 — Tangle
+
+Ricardo Junior grows from an exposed sweet potato in a ribbed white pot into a tall, tangled plant over 38 seconds. The model interprets the supplied photograph: a dense leafy crown, a sparse middle climbing a black stake with jute ties, a wandering lower vine, and two dried leaves. The name on the pot, wooden stool, and linen curtain make a small portrait of his home. The reference photograph itself is not included in the website.
+
+Three procedural vines extend from their tips. Twenty-eight heart-shaped leaves emerge folded, grow, and open, with vein geometry following the same deformation. Petioles and leaves remain connected throughout growth. Camera framing widens as the plant grows; every pose derives from timeline time, so rewinding restores the plant exactly. This is a stylized growth portrait, not a botanical simulation or a literal recording of its growth history.
+
+Grow/play/pause, return to the potato, and scrub controls start paused and never loop. Reduced-motion preferences step through still stages. Hidden tabs pause playback. The gallery preview shows only the starting potato. Uses the shared Three.js renderer and a Canvas geometry fallback for browsers without WebGL.
+
+Validation: `node scripts/test-tangle.mjs` checks finite geometry, attached leaves, the initial and mature states, exact restoration after rewinding, and responsive camera framing.
