@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09151c">
+  <title>06 · Orrery — Codevember</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><a href="../../" aria-label="All experiments">↖ Codevember</a><h1><small>06 /</small> Orrery</h1></header>
+  <main>
+    <canvas id="sky" role="img" aria-label="An orrery seen from Earth, the Sun, and distant galaxies. A foreground black hole bends the light from home."></canvas>
+    <section class="transport" aria-label="Animation controls">
+      <div class="context"><span id="hint"></span><button id="align" hidden>Align lens</button></div>
+      <nav aria-label="Viewpoints">
+        <button data-time="0">Earth</button><button data-time="11">Sun</button><button data-time="23">Galaxies</button><button data-time="34">Black hole</button>
+      </nav>
+      <div class="row"><button id="play" disabled>Play</button><button id="reset" aria-label="Return to Earth" title="Return to Earth">↶</button><input id="time" type="range" min="0" max="44" step="0.01" value="0" aria-label="Animation timeline"><output id="clock">00:00 / 00:44</output></div>
+    </section>
+    <p id="status" class="sr" role="status" aria-live="polite"></p>
+    <noscript>This experiment needs JavaScript.</noscript>
+  </main>
+  <script type="module" src="./scene.js"></script>
+</body>
+</html>

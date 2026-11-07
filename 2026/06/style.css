@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+:root { color-scheme: dark; color: #f0e0bb; background: #09151c; font-family: Georgia, serif; }
+body { margin: 0; }
+main { position: relative; height: 100svh; min-height: 360px; overflow: hidden; }
+header { position: absolute; z-index: 2; inset: 23px 5vw auto; display: flex; justify-content: space-between; align-items: baseline; pointer-events: none; }
+header a { color: inherit; text-decoration: none; font-size: 21px; font-style: italic; pointer-events: auto; }
+h1 { margin: 0; font-size: 26px; font-weight: normal; font-style: italic; }
+h1 small { font: 11px monospace; margin-right: 7px; color: #b49d76; }
+canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+canvas[data-interactive='true'] { cursor: crosshair; touch-action: none; }
+.transport { position: absolute; bottom: max(20px,env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(430px,91vw); padding: 11px 15px; border: 1px solid #ad987358; background: #07151be8; }
+.context { position: absolute; bottom: calc(100% + 9px); width: 100%; left: 0; display: flex; gap: 12px; justify-content: center; align-items: center; font: italic 13px Georgia,serif; color: #e4d8ba; text-shadow: 0 1px 5px #000; }
+button { font: inherit; color: inherit; cursor: pointer; background: transparent; border: 0; }
+.context button { padding: 4px 8px; border: 1px solid #8f8268; background: #0b1a20; font-size: 12px; }
+nav { display: flex; justify-content: space-between; gap: 6px; }
+nav button { color: #a3ada7; padding: 3px 1px; font: italic 16px Georgia,serif; }
+nav [aria-current='step'] { color: #ffdc93; border-bottom: 1px solid #d6b36e; }
+.row { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+#play { border: 1px solid #9b865f; min-width: 51px; padding: 5px; font-size: 12px; }
+#reset { font-size: 21px; padding: 0 3px; }
+input { min-width: 25px; flex: 1; accent-color: #dbb972; height: 22px; cursor: pointer; }
+output { font: 10px monospace; white-space: nowrap; color: #c5c9b8; }
+:focus-visible { outline: 2px solid #f1c675; outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[hidden] { display: none !important; }
+.poster header,.poster .transport { display: none; }
+.poster main { min-height: 0; }
+@media(max-height:480px) { header { top: 10px; } .transport { bottom: 5px; padding: 4px 10px; } .row { margin-top: 2px; } }
